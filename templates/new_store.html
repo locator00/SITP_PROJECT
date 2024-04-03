@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>  
+<html> 
+    <head>     
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css" />     
+        <title> Добавление магазина </title>            
+    </head>
+    <body>   
+        <div class=menu>     
+            <ul>         
+                <li class = active><a href={{url_for("new_store")}}>Магазин</a></li>
+            </ul>   
+        </div>   
+        <div class = block>      
+            <p>        
+                <form action='{{url_for("index")}}' method ="get">        
+                    <div class="row">
+                        Название магазина:
+                        <input type="text" name="new_store">         
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Добавить магазин" >         
+                        <a href="{{url_for('index')}}"><input type="submit" value="Отменить"></a>
+                    </div>
+                </form>          
+            </p>                
+        </div>     
+    </body> 
+</html>

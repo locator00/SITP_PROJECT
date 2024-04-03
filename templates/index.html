@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+        <title> Поставка </title>
+        {% macro render_table(table_name, relation, id) %}
+            <p>
+                <b>{{ table_name }}</b>
+            </p>
+            <table>
+                <tr>
+                    {% for name in relation.dtypes.index %}
+                        {% if name != id %}
+                            <th>{{ name }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                <tbody>
+                    {% for i in range(len(relation)) %}
+                        <tr>
+                            {% for name in relation.dtypes.index %}
+                                {% if name != id%}
+                                    <td>
+                                        {% if relation.loc[i, name] == None %}
+                                            <form action = '' method ="get">
+                                                <input type="hidden" name = return value={{relation.loc[i, "order_id"]}}>
+                                                <input type="submit" value="Доставлено">
+                                            </form>
+                                        {% else %}
+                                            {{ relation.loc[i, name] }}
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endmacro %}
+        {% macro render_select(select_name, store, id) %}
+            <select name = '{{select_name}}'>
+                {% for i in range(len(store)) %}
+                    <option value="{{i+1}}" {% if store.loc[i, "store_id"] == id %} selected {% endif %}>
+                        {{store.loc[i, "store_name"]}}
+                    </option>
+                {% endfor %}
+            </select>
+        {% endmacro %}
+    </head>
+    <body>
+        <div class=menu>     
+            <ul>         
+                <li class = active><a href={{ url_for("index")}}>Магазин</a></li>
+            </ul>   
+        </div> 
+        <div class = block>
+            <p>
+                <form action='' method ="get">
+                    Магазин: 
+                    {{ render_select("store", store, store_id) }}
+                    <input type = "submit" value = "Найти">
+                </form>
+            </p>
+            <form action="{{url_for('new_store')}}" method="get">
+                <input type="submit" value="Добавить магазин">
+            </form>
+            {{ render_table("Заказ", combo_box,  "order_id") }}
+            <div>
+                <form action="{{url_for('search')}}" method="get">
+                    <input type="submit" value="Добавить заказ">         
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

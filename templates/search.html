@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
+    <title> Каталог продуктов </title>
+    {% macro render_checkbox(name, relation, selected) %}
+        {% for i in range(relation|length) %}
+            {% set value = relation.loc[i, relation.dtypes.index[0]] %}
+            <div class="row">
+                <input type="checkbox" name="{{ name }}" value="{{ value }}" {% if value|string in selected %} checked {% endif %}/>
+                {{ relation.loc[i, relation.dtypes.index[1]]|string + " (" + relation.loc[i, relation.dtypes.index[2]]|string + ")" }}
+            </div>
+        {% endfor %}
+    {% endmacro %}
+    {% macro render_card(relation) %}
+        <div class = 'all_card'>
+            {% for i in range(relation|length) %}
+            <div class="card">
+                <div class="column">
+                    {% for name in relation.dtypes.index %}
+                        <div class="row">
+                            <b>{{ name }}</b>: {{ relation.loc[i, name] }}
+                        </div>
+                    {% endfor %}
+                    <form action='{{url_for("index")}}' method ="get">
+                        <input type="number" name="product_num"> 
+                        <button type="submit" value='{{relation.loc[i, 'ID_продукта']}}' name="product" {% if relation.loc[i, 'Количество'] == 0  %} disabled {% endif %}>
+                            Выбрать
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endmacro %}
+</head>
+<body>
+    <div class=menu>
+        <ul>
+            <li class = active><a href={{ url_for("search")}}>Продукты</a></li>
+        </ul>
+    </div>
+    <div class='row'>
+        <p>
+            <form action='' method="post">
+                <div class="row checkboxs">
+                    <div class='column'>
+                        <div class="column">
+                            <details {% if checked_list_type !=[] %} open {%endif%}><summary>Тип продукта</summary>
+                                {{ render_checkbox('types', type_box, checked_list_type) }}
+                            </details>
+                            <details {% if checked_list_manufacturer !=[] %} open {%endif%}><summary>Производитель</summary>
+                                {{ render_checkbox('manufacturers', manufacturer_box, checked_list_manufacturer) }}
+                            </details>
+                            <details {% if checked_list_country !=[] %} open {%endif%}><summary>Страна</summary>
+                                {{ render_checkbox('countrys', country_box, checked_list_country) }}
+                            </details>
+                        </div>
+                        <input type="submit" value="Очистить" name="reset" />
+                        <input type="submit" value="Найти" name="confirm" />
+                    </div>
+                </div> 
+            </form> 
+        </p>
+        <p>
+            <div class='column'>
+                <form action='{{url_for("index")}}' method ="get">
+                    <input type="submit" name = 'noselect' value="Назад" />
+                </form> 
+                {{ render_card(filter_box) }}
+            </div>
+        </p>
+    </div>
+</body>
+</html>
